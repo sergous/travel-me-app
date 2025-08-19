@@ -116,15 +116,13 @@ export default function ToursScreen() {
 								<View className="absolute inset-0 bg-black/20" />
 								
 								{/* Like button */}
-								<TouchableOpacity 
+								<TouchableOpacity
 									className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
 									onPress={() => toggleLike(tour.id)}
 								>
-									<Heart 
-										size={20} 
-										color={tour.liked ? "#FF6B6B" : "white"}
-										fill={tour.liked ? "#FF6B6B" : "transparent"}
-									/>
+									<Text className="text-lg">
+										{tour.liked ? "❤️" : "🤍"}
+									</Text>
 								</TouchableOpacity>
 
 								{/* Pagination dots */}
