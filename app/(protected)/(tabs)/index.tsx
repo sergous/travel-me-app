@@ -86,7 +86,9 @@ export default function ToursScreen() {
 
 				{/* Search bar */}
 				<View className="flex-row items-center bg-gray-50 rounded-2xl px-4 py-3 shadow-sm">
-					<Search size={20} color="#666" className="mr-3" />
+					<View className="w-5 h-5 mr-3">
+						<Text className="text-gray-600 text-lg">🔍</Text>
+					</View>
 					<TextInput
 						placeholder="Where are you going?"
 						className="flex-1 text-base text-black"
