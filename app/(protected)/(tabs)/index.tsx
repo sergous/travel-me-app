@@ -168,7 +168,7 @@ export default function ToursScreen() {
 
 							{/* Action button */}
 							<TouchableOpacity className="w-16 h-12 border border-blue-300 rounded-2xl items-center justify-center">
-								<ArrowUpRight size={20} color="#41C6FF" />
+								<Text className="text-blue-400 text-lg">↗️</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
