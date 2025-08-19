@@ -9,20 +9,17 @@ import { Text } from "@/components/ui/text";
 export default function TabsLayout() {
 	const { colorScheme } = useColorScheme();
 
-	const TabIcon = ({ icon: Icon, color, focused, label }: {
-		icon: any;
-		color: string;
+	const TabIcon = ({ emoji, focused, label }: {
+		emoji: string;
 		focused: boolean;
 		label: string;
 	}) => (
 		<View className="items-center justify-center min-h-[50px] py-1">
-			<Icon 
-				size={24} 
-				color={focused ? "#6FBAFF" : color}
-				strokeWidth={1.5}
-			/>
-			<Text 
-				className={`text-xs mt-1 ${
+			<Text className="text-2xl mb-1">
+				{emoji}
+			</Text>
+			<Text
+				className={`text-xs ${
 					focused ? "text-blue-400" : "text-gray-600"
 				}`}
 			>
