@@ -68,6 +68,10 @@
 			]
 		}
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sergous/travel-me-app.git"
+	},
 	"private": true,
 	"packageManager": "bun@1.2.17"
 }
