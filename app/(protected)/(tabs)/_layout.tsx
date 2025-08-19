@@ -49,61 +49,57 @@ export default function TabsLayout() {
 				tabBarShowLabel: false,
 			}}
 		>
-			<Tabs.Screen 
-				name="index" 
-				options={{ 
+			<Tabs.Screen
+				name="index"
+				options={{
 					title: "Main",
-					tabBarIcon: ({ color, focused }) => (
-						<TabIcon 
-							icon={Home} 
-							color={color} 
-							focused={focused} 
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							emoji="🏠"
+							focused={focused}
 							label="Main"
 						/>
 					),
-				}} 
+				}}
 			/>
-			<Tabs.Screen 
+			<Tabs.Screen
 				name="bookings"
-				options={{ 
+				options={{
 					title: "My bookings",
-					tabBarIcon: ({ color, focused }) => (
-						<TabIcon 
-							icon={Calendar} 
-							color={color} 
-							focused={focused} 
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							emoji="📅"
+							focused={focused}
 							label="My bookings"
 						/>
 					),
-				}} 
+				}}
 			/>
-			<Tabs.Screen 
+			<Tabs.Screen
 				name="messages"
-				options={{ 
+				options={{
 					title: "Messages",
-					tabBarIcon: ({ color, focused }) => (
-						<TabIcon 
-							icon={MessageCircle} 
-							color={color} 
-							focused={focused} 
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							emoji="💬"
+							focused={focused}
 							label="Messages"
 						/>
 					),
-				}} 
+				}}
 			/>
-			<Tabs.Screen 
+			<Tabs.Screen
 				name="profile"
-				options={{ 
+				options={{
 					title: "Profile",
-					tabBarIcon: ({ color, focused }) => (
-						<TabIcon 
-							icon={User} 
-							color={color} 
-							focused={focused} 
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							emoji="👤"
+							focused={focused}
 							label="Profile"
 						/>
 					),
-				}} 
+				}}
 			/>
 		</Tabs>
 	);
