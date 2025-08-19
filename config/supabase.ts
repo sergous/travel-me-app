@@ -1,12 +1,9 @@
-import { AppState } from "react-native";
+import { AppState, Platform } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
-
-// Complete the web browser auth session
-WebBrowser.maybeCompleteAuthSession();
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
@@ -27,6 +24,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Helper function for Google OAuth with Supabase
 export const signInWithGoogle = async () => {
 	try {
+		// Only complete auth session on native platforms to avoid cross-origin issues
+		if (Platform.OS !== 'web') {
+			WebBrowser.maybeCompleteAuthSession();
+		}
+
 		const redirectUrl = AuthSession.makeRedirectUri({
 			useProxy: true,
 		});
@@ -79,10 +81,19 @@ export const signInWithGoogle = async () => {
 	}
 };
 
-AppState.addEventListener("change", (state) => {
-	if (state === "active") {
-		supabase.auth.startAutoRefresh();
-	} else {
-		supabase.auth.stopAutoRefresh();
-	}
-});
+// Initialize auth refresh handling
+export const initializeAuthListener = () => {
+	const handleAppStateChange = (state: string) => {
+		if (state === "active") {
+			supabase.auth.startAutoRefresh();
+		} else {
+			supabase.auth.stopAutoRefresh();
+		}
+	};
+
+	AppState.addEventListener("change", handleAppStateChange);
+
+	return () => {
+		AppState.removeEventListener("change", handleAppStateChange);
+	};
+};
