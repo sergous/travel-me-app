@@ -29,7 +29,7 @@ export default function WelcomeScreen() {
 		} catch (error: any) {
 			Alert.alert(
 				"Sign In Error",
-				error.message || "Failed to sign in with Google. Please try again."
+				error.message || "Failed to sign in with Google. Please try again.",
 			);
 		} finally {
 			setIsGoogleLoading(false);

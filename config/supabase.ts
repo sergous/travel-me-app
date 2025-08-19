@@ -5,11 +5,18 @@ import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
+const supabaseUrl =
+	process.env.EXPO_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseAnonKey =
+	process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
 
-if (!process.env.EXPO_PUBLIC_SUPABASE_URL || !process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
-	console.warn("⚠️ Supabase environment variables are missing. Using placeholder values. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY in your environment.");
+if (
+	!process.env.EXPO_PUBLIC_SUPABASE_URL ||
+	!process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+) {
+	console.warn(
+		"⚠️ Supabase environment variables are missing. Using placeholder values. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY in your environment.",
+	);
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -25,16 +32,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 export const signInWithGoogle = async () => {
 	try {
 		// Only complete auth session on native platforms to avoid cross-origin issues
-		if (Platform.OS !== 'web') {
+		if (Platform.OS !== "web") {
 			WebBrowser.maybeCompleteAuthSession();
 		}
 
-		const redirectUrl = AuthSession.makeRedirectUri({
-			useProxy: true,
-		});
+		const redirectUrl = AuthSession.makeRedirectUri();
 
 		const response = await supabase.auth.signInWithOAuth({
-			provider: 'google',
+			provider: "google",
 			options: {
 				redirectTo: redirectUrl,
 			},
@@ -49,14 +54,14 @@ export const signInWithGoogle = async () => {
 			// Open the OAuth URL in the browser
 			const result = await WebBrowser.openAuthSessionAsync(
 				response.data.url,
-				redirectUrl
+				redirectUrl,
 			);
 
-			if (result.type === 'success' && result.url) {
+			if (result.type === "success" && result.url) {
 				// Extract the session from the URL
 				const url = new URL(result.url);
-				const access_token = url.searchParams.get('access_token');
-				const refresh_token = url.searchParams.get('refresh_token');
+				const access_token = url.searchParams.get("access_token");
+				const refresh_token = url.searchParams.get("refresh_token");
 
 				if (access_token && refresh_token) {
 					const { data, error } = await supabase.auth.setSession({
@@ -91,9 +96,9 @@ export const initializeAuthListener = () => {
 		}
 	};
 
-	AppState.addEventListener("change", handleAppStateChange);
+	const subscription = AppState.addEventListener("change", handleAppStateChange);
 
 	return () => {
-		AppState.removeEventListener("change", handleAppStateChange);
+		subscription.remove();
 	};
 };
