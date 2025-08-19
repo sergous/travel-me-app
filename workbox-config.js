@@ -1,5 +1,5 @@
 module.exports = {
-	globDirectory: "web-dist/",
+	globDirectory: "dist/",
 	globPatterns: [
 		"**/*.{js,css,html,png,jpg,jpeg,svg,ico,json,woff,woff2,ttf,eot}",
 	],
