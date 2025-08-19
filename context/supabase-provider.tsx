@@ -8,7 +8,7 @@ import {
 
 import { Session } from "@supabase/supabase-js";
 
-import { supabase, signInWithGoogle } from "@/config/supabase";
+import { supabase, signInWithGoogle, initializeAuthListener } from "@/config/supabase";
 
 type AuthState = {
 	initialized: boolean;
@@ -95,17 +95,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	useEffect(() => {
 		let isMounted = true;
 
+		// Initialize auth session
 		supabase.auth.getSession().then(({ data: { session } }) => {
 			if (isMounted) {
 				setSession(session);
 			}
 		});
 
+		// Set up auth state change listener
 		const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
 			if (isMounted) {
 				setSession(session);
 			}
 		});
+
+		// Initialize AppState listener for auth refresh
+		const removeAuthListener = initializeAuthListener();
 
 		if (isMounted) {
 			setInitialized(true);
@@ -114,6 +119,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		return () => {
 			isMounted = false;
 			subscription.unsubscribe();
+			removeAuthListener();
 		};
 	}, []);
 
