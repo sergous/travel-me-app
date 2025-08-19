@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, ScrollView, TextInput, TouchableOpacity, ImageBackground } from "react-native";
-import { Search, ArrowUpRight, Heart } from "lucide-react-native";
 
 import { SafeAreaView } from "@/components/safe-area-view";
 import { Text } from "@/components/ui/text";
