@@ -8,13 +8,14 @@ import {
 
 import { Session } from "@supabase/supabase-js";
 
-import { supabase } from "@/config/supabase";
+import { supabase, signInWithGoogle, initializeAuthListener } from "@/config/supabase";
 
 type AuthState = {
 	initialized: boolean;
 	session: Session | null;
 	signUp: (email: string, password: string) => Promise<void>;
 	signIn: (email: string, password: string) => Promise<void>;
+	signInWithGoogle: () => Promise<void>;
 	signOut: () => Promise<void>;
 };
 
@@ -23,6 +24,7 @@ export const AuthContext = createContext<AuthState>({
 	session: null,
 	signUp: async () => {},
 	signIn: async () => {},
+	signInWithGoogle: async () => {},
 	signOut: async () => {},
 });
 
@@ -70,6 +72,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		}
 	};
 
+	const handleSignInWithGoogle = async () => {
+		try {
+			await signInWithGoogle();
+		} catch (error: any) {
+			console.error("Error signing in with Google:", error);
+			throw error;
+		}
+	};
+
 	const signOut = async () => {
 		const { error } = await supabase.auth.signOut();
 
@@ -82,15 +93,34 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	};
 
 	useEffect(() => {
+		let isMounted = true;
+
+		// Initialize auth session
 		supabase.auth.getSession().then(({ data: { session } }) => {
-			setSession(session);
+			if (isMounted) {
+				setSession(session);
+			}
 		});
 
-		supabase.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
+		// Set up auth state change listener
+		const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+			if (isMounted) {
+				setSession(session);
+			}
 		});
 
-		setInitialized(true);
+		// Initialize AppState listener for auth refresh
+		const removeAuthListener = initializeAuthListener();
+
+		if (isMounted) {
+			setInitialized(true);
+		}
+
+		return () => {
+			isMounted = false;
+			subscription.unsubscribe();
+			removeAuthListener();
+		};
 	}, []);
 
 	return (
@@ -100,6 +130,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 				session,
 				signUp,
 				signIn,
+				signInWithGoogle: handleSignInWithGoogle,
 				signOut,
 			}}
 		>

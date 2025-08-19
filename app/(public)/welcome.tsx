@@ -1,5 +1,5 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useState } from "react";
+import { View, ActivityIndicator, Alert } from "react-native";
 import { useRouter } from "expo-router";
 
 import { Image } from "@/components/image";
@@ -8,14 +8,33 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { H1, Muted } from "@/components/ui/typography";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { useAuth } from "@/context/supabase-provider";
 
 export default function WelcomeScreen() {
 	const router = useRouter();
 	const { colorScheme } = useColorScheme();
+	const { signInWithGoogle } = useAuth();
+	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
 	const appIcon =
 		colorScheme === "dark"
 			? require("@/assets/icon.png")
 			: require("@/assets/icon-dark.png");
+
+	const handleGoogleSignIn = async () => {
+		try {
+			setIsGoogleLoading(true);
+			await signInWithGoogle();
+			// Navigation will be handled automatically by the auth state change
+		} catch (error: any) {
+			Alert.alert(
+				"Sign In Error",
+				error.message || "Failed to sign in with Google. Please try again."
+			);
+		} finally {
+			setIsGoogleLoading(false);
+		}
+	};
 
 	return (
 		<SafeAreaView className="flex flex-1 bg-background p-4">
@@ -31,6 +50,23 @@ export default function WelcomeScreen() {
 				<Button
 					size="default"
 					variant="default"
+					onPress={handleGoogleSignIn}
+					disabled={isGoogleLoading}
+				>
+					{isGoogleLoading ? (
+						<ActivityIndicator size="small" color="white" />
+					) : (
+						<Text>Continue with Google</Text>
+					)}
+				</Button>
+				<View className="flex flex-row items-center gap-x-4">
+					<View className="flex-1 h-px bg-border" />
+					<Text className="text-muted-foreground text-sm">or</Text>
+					<View className="flex-1 h-px bg-border" />
+				</View>
+				<Button
+					size="default"
+					variant="secondary"
 					onPress={() => {
 						router.push("/sign-up");
 					}}
@@ -39,7 +75,7 @@ export default function WelcomeScreen() {
 				</Button>
 				<Button
 					size="default"
-					variant="secondary"
+					variant="outline"
 					onPress={() => {
 						router.push("/sign-in");
 					}}
