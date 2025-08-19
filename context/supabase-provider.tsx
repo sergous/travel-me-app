@@ -82,15 +82,28 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	};
 
 	useEffect(() => {
+		let isMounted = true;
+
 		supabase.auth.getSession().then(({ data: { session } }) => {
-			setSession(session);
+			if (isMounted) {
+				setSession(session);
+			}
 		});
 
-		supabase.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
+		const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+			if (isMounted) {
+				setSession(session);
+			}
 		});
 
-		setInitialized(true);
+		if (isMounted) {
+			setInitialized(true);
+		}
+
+		return () => {
+			isMounted = false;
+			subscription.unsubscribe();
+		};
 	}, []);
 
 	return (
