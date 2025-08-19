@@ -1,17 +1,42 @@
-import { Slot } from "expo-router";
-import { useDeviceContext } from "twrnc";
+import "../global.css";
 
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import tw from "@/lib/tailwind";
-import { SupabaseProvider } from "@/context/SupabaseProvider";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 
-export default function Root() {
-	useDeviceContext(tw);
+import { AuthProvider, useAuth } from "@/context/supabase-provider";
+
+SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+	duration: 400,
+	fade: true,
+});
+
+export default function RootLayout() {
 	return (
-		<SupabaseProvider>
-			<SafeAreaProvider>
-				<Slot />
-			</SafeAreaProvider>
-		</SupabaseProvider>
+		<AuthProvider>
+			<RootNavigator />
+		</AuthProvider>
+	);
+}
+
+function RootNavigator() {
+	const { initialized, session } = useAuth();
+
+	if (!initialized) return;
+	else {
+		SplashScreen.hideAsync();
+	}
+
+	return (
+		<Stack screenOptions={{ headerShown: false, gestureEnabled: false }}>
+			<Stack.Protected guard={!!session}>
+				<Stack.Screen name="(protected)" />
+			</Stack.Protected>
+
+			<Stack.Protected guard={!session}>
+				<Stack.Screen name="(public)" />
+			</Stack.Protected>
+		</Stack>
 	);
 }

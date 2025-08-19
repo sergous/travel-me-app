@@ -1,70 +1,92 @@
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import { Pressable } from "react-native";
+import { cn } from "@/lib/utils";
+import { TextClassContext } from "@/components/ui/text";
 
-import tw from "@/lib/tailwind";
+const buttonVariants = cva(
+	"group flex items-center justify-center rounded-md web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2",
+	{
+		variants: {
+			variant: {
+				default: "bg-primary web:hover:opacity-90 active:opacity-90",
+				destructive: "bg-destructive web:hover:opacity-90 active:opacity-90",
+				outline:
+					"border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
+				secondary: "bg-secondary web:hover:opacity-80 active:opacity-80",
+				ghost:
+					"web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
+				link: "web:underline-offset-4 web:hover:underline web:focus:underline",
+			},
+			size: {
+				default: "h-10 px-4 py-2 native:h-12 native:px-5 native:py-3",
+				sm: "h-9 rounded-md px-3",
+				lg: "h-11 rounded-md px-8 native:h-14",
+				icon: "h-10 w-10",
+			},
+		},
+		defaultVariants: {
+			variant: "default",
+			size: "default",
+		},
+	},
+);
 
-export type ButtonVariantTypes =
-	| "default"
-	| "destructive"
-	| "outline"
-	| "secondary"
-	| "ghost"
-	| "link";
+const buttonTextVariants = cva(
+	"web:whitespace-nowrap text-sm native:text-base font-medium text-foreground web:transition-colors",
+	{
+		variants: {
+			variant: {
+				default: "text-primary-foreground",
+				destructive: "text-destructive-foreground",
+				outline: "group-active:text-accent-foreground",
+				secondary:
+					"text-secondary-foreground group-active:text-secondary-foreground",
+				ghost: "group-active:text-accent-foreground",
+				link: "text-primary group-active:underline",
+			},
+			size: {
+				default: "",
+				sm: "",
+				lg: "native:text-lg",
+				icon: "",
+			},
+		},
+		defaultVariants: {
+			variant: "default",
+			size: "default",
+		},
+	},
+);
 
-export interface IButtonProps
-	extends React.ComponentProps<typeof TouchableOpacity> {
-	children?: React.ReactNode;
-	variant?: ButtonVariantTypes;
-	size?: "default" | "sm" | "lg";
-	label?: string;
-	isLoading?: boolean;
-}
+type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> &
+	VariantProps<typeof buttonVariants>;
 
-export const Button = ({
-	children,
-	variant = "default",
-	size = "default",
-	label = "Button",
-	isLoading = false,
-	...props
-}: IButtonProps) => {
+const Button = React.forwardRef<
+	React.ComponentRef<typeof Pressable>,
+	ButtonProps
+>(({ className, variant, size, ...props }, ref) => {
 	return (
-		<TouchableOpacity
-			style={[
-				tw`items-center justify-center rounded-md`,
-				variant === "default" && tw`bg-primary dark:bg-dark-primary`,
-				variant === "destructive" &&
-					tw`bg-destructive dark:bg-dark-destructive`,
-				variant === "outline" && tw`border border-input`,
-				variant === "secondary" && tw`bg-secondary dark:bg-dark-secondary`,
-				variant === "ghost" && tw``,
-				variant === "link" && tw``,
-				size === "default" && tw`h-10 px-4 py-2`,
-				size === "sm" && tw`h-9 px-3 rounded-md`,
-				size === "lg" && tw`h-11 px-8 rounded-md`,
-			]}
-			{...props}
+		<TextClassContext.Provider
+			value={buttonTextVariants({
+				variant,
+				size,
+				className: "web:pointer-events-none",
+			})}
 		>
-			{isLoading ? (
-				<ActivityIndicator size={"small"} />
-			) : (
-				<Text
-					style={[
-						variant === "default" &&
-							tw`text-primary-foreground dark:text-dark-primary-foreground`,
-						variant === "destructive" &&
-							tw`text-destructive-foreground dark:text-dark-destructive-foreground`,
-						variant === "secondary" &&
-							tw`text-secondary-foreground dark:text-dark-secondary-foreground`,
-						variant === "outline" && tw`text-input`,
-						variant === "ghost" &&
-							tw`text-primary-foreground dark:text-dark-primary-foreground`,
-						variant === "link" && tw`text-primary dark:text-dark-primary`,
-					]}
-				>
-					{label}
-				</Text>
-			)}
-		</TouchableOpacity>
+			<Pressable
+				className={cn(
+					props.disabled && "opacity-50 web:pointer-events-none",
+					buttonVariants({ variant, size, className }),
+				)}
+				ref={ref}
+				role="button"
+				{...props}
+			/>
+		</TextClassContext.Provider>
 	);
-};
+});
+Button.displayName = "Button";
+
+export { Button, buttonTextVariants, buttonVariants };
+export type { ButtonProps };
