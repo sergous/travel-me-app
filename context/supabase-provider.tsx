@@ -8,13 +8,14 @@ import {
 
 import { Session } from "@supabase/supabase-js";
 
-import { supabase } from "@/config/supabase";
+import { supabase, signInWithGoogle } from "@/config/supabase";
 
 type AuthState = {
 	initialized: boolean;
 	session: Session | null;
 	signUp: (email: string, password: string) => Promise<void>;
 	signIn: (email: string, password: string) => Promise<void>;
+	signInWithGoogle: () => Promise<void>;
 	signOut: () => Promise<void>;
 };
 
@@ -23,6 +24,7 @@ export const AuthContext = createContext<AuthState>({
 	session: null,
 	signUp: async () => {},
 	signIn: async () => {},
+	signInWithGoogle: async () => {},
 	signOut: async () => {},
 });
 
@@ -70,6 +72,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		}
 	};
 
+	const handleSignInWithGoogle = async () => {
+		try {
+			await signInWithGoogle();
+		} catch (error: any) {
+			console.error("Error signing in with Google:", error);
+			throw error;
+		}
+	};
+
 	const signOut = async () => {
 		const { error } = await supabase.auth.signOut();
 
@@ -113,6 +124,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 				session,
 				signUp,
 				signIn,
+				signInWithGoogle: handleSignInWithGoogle,
 				signOut,
 			}}
 		>
