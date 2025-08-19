@@ -28,15 +28,23 @@ function RootNavigator() {
 		SplashScreen.hideAsync();
 	}
 
+	// Temporarily bypass auth and show tours screen directly
 	return (
 		<Stack screenOptions={{ headerShown: false, gestureEnabled: false }}>
-			<Stack.Protected guard={!!session}>
-				<Stack.Screen name="(protected)" />
-			</Stack.Protected>
-
-			<Stack.Protected guard={!session}>
-				<Stack.Screen name="(public)" />
-			</Stack.Protected>
+			<Stack.Screen name="(protected)" />
 		</Stack>
 	);
+
+	// Original auth logic (commented out temporarily)
+	// return (
+	// 	<Stack screenOptions={{ headerShown: false, gestureEnabled: false }}>
+	// 		<Stack.Protected guard={!!session}>
+	// 			<Stack.Screen name="(protected)" />
+	// 		</Stack.Protected>
+
+	// 		<Stack.Protected guard={!session}>
+	// 			<Stack.Screen name="(public)" />
+	// 		</Stack.Protected>
+	// 	</Stack>
+	// );
 }
