@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, ScrollView, TextInput, TouchableOpacity, ImageBackground } from "react-native";
+import {
+	View,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+	ImageBackground,
+} from "react-native";
 
 import { SafeAreaView } from "@/components/safe-area-view";
 import { Text } from "@/components/ui/text";
@@ -22,16 +28,18 @@ const mockTours: TourCard[] = [
 		location: "Hawaii, USA",
 		rating: "4.8",
 		dates: "23 aug. - 25 aug.",
-		image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80",
+		image:
+			"https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80",
 		liked: false,
 	},
 	{
-		id: "2", 
+		id: "2",
 		title: "Mountain Adventure Trek",
 		location: "Alps, Switzerland",
 		rating: "4.9",
 		dates: "15 sep. - 18 sep.",
-		image: "https://images.unsplash.com/photo-1464822759844-d150baec3374?w=800&q=80",
+		image:
+			"https://images.unsplash.com/photo-1464822759844-d150baec3374?w=800&q=80",
 		liked: true,
 	},
 ];
@@ -44,9 +52,11 @@ export default function ToursScreen() {
 	const categories = ["Hiking", "Tours", "Impressions"];
 
 	const toggleLike = (tourId: string) => {
-		setTours(tours.map(tour => 
-			tour.id === tourId ? { ...tour, liked: !tour.liked } : tour
-		));
+		setTours(
+			tours.map((tour) =>
+				tour.id === tourId ? { ...tour, liked: !tour.liked } : tour,
+			),
+		);
 	};
 
 	const renderStars = (rating: string) => {
@@ -71,11 +81,9 @@ export default function ToursScreen() {
 							onPress={() => setActiveCategory(category)}
 							className="flex-1"
 						>
-							<Text 
+							<Text
 								className={`text-xl font-bold text-center ${
-									activeCategory === category 
-										? "text-black" 
-										: "text-gray-400"
+									activeCategory === category ? "text-black" : "text-gray-400"
 								}`}
 							>
 								{category}
@@ -98,7 +106,7 @@ export default function ToursScreen() {
 			</View>
 
 			{/* Tours list */}
-			<ScrollView 
+			<ScrollView
 				className="flex-1"
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ paddingBottom: 100 }}
@@ -114,15 +122,13 @@ export default function ToursScreen() {
 							>
 								{/* Gradient overlay */}
 								<View className="absolute inset-0 bg-black/20" />
-								
+
 								{/* Like button */}
 								<TouchableOpacity
 									className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
 									onPress={() => toggleLike(tour.id)}
 								>
-									<Text className="text-lg">
-										{tour.liked ? "❤️" : "🤍"}
-									</Text>
+									<Text className="text-lg">{tour.liked ? "❤️" : "🤍"}</Text>
 								</TouchableOpacity>
 
 								{/* Pagination dots */}

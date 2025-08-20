@@ -9,19 +9,19 @@ import { Text } from "@/components/ui/text";
 export default function TabsLayout() {
 	const { colorScheme } = useColorScheme();
 
-	const TabIcon = ({ emoji, focused, label }: {
+	const TabIcon = ({
+		emoji,
+		focused,
+		label,
+	}: {
 		emoji: string;
 		focused: boolean;
 		label: string;
 	}) => (
 		<View className="items-center justify-center min-h-[50px] py-1">
-			<Text className="text-2xl mb-1">
-				{emoji}
-			</Text>
+			<Text className="text-2xl mb-1">{emoji}</Text>
 			<Text
-				className={`text-xs ${
-					focused ? "text-blue-400" : "text-gray-600"
-				}`}
+				className={`text-xs ${focused ? "text-blue-400" : "text-gray-600"}`}
 			>
 				{label}
 			</Text>
@@ -54,11 +54,7 @@ export default function TabsLayout() {
 				options={{
 					title: "Main",
 					tabBarIcon: ({ focused }) => (
-						<TabIcon
-							emoji="🏠"
-							focused={focused}
-							label="Main"
-						/>
+						<TabIcon emoji="🏠" focused={focused} label="Main" />
 					),
 				}}
 			/>
@@ -67,11 +63,7 @@ export default function TabsLayout() {
 				options={{
 					title: "My bookings",
 					tabBarIcon: ({ focused }) => (
-						<TabIcon
-							emoji="📅"
-							focused={focused}
-							label="My bookings"
-						/>
+						<TabIcon emoji="📅" focused={focused} label="My bookings" />
 					),
 				}}
 			/>
@@ -80,11 +72,7 @@ export default function TabsLayout() {
 				options={{
 					title: "Messages",
 					tabBarIcon: ({ focused }) => (
-						<TabIcon
-							emoji="💬"
-							focused={focused}
-							label="Messages"
-						/>
+						<TabIcon emoji="💬" focused={focused} label="Messages" />
 					),
 				}}
 			/>
@@ -93,11 +81,7 @@ export default function TabsLayout() {
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ focused }) => (
-						<TabIcon
-							emoji="👤"
-							focused={focused}
-							label="Profile"
-						/>
+						<TabIcon emoji="👤" focused={focused} label="Profile" />
 					),
 				}}
 			/>
